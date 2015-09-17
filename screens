@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# ------------------------------------------------------------------------------
+# List all pseudo terminals managed by screen(1) and select one to attach to.
+# Part of shellutils
+# (C) 2014 Gunnar Andersson
+# License: CC-BY-INTL-4.0
+# ------------------------------------------------------------------------------
+
+found="n"
+attached=$(screen -list | grep '(Attached)')  
+[ -n "$attached" ] && { 
+
+  echo You are currently in a screen session:
+  echo "$attached"
+  found=y
+}
+
+detached=$(screen -list | grep '(Detached')
+[ -n "$detached" ] && { 
+  found=y
+
+  echo You have detached screens: 
+  echo "$detached"
+
+  echo  'Note: To detach - hit CTRL-A, CTRL-D'
+  echo -n 'Attach to (1) : '
+  read n
+
+  [ -z "$n" ] && n=1
+
+  pid=$(screen -list | grep  '(Detached)' | head -$n | tail -1 | sed 's/\([0123456789]*\)\..*/\1/')
+  echo Attaching to pid $pid
+  screen -r $pid
+
+}
+
+
+if [ "$found" != "y" ] ; then
+   echo No screens
+fi
