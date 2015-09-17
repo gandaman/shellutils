@@ -11,7 +11,7 @@ found="n"
 attached=$(screen -list | grep '(Attached)')  
 [ -n "$attached" ] && { 
 
-  echo You are currently in a screen session:
+  echo "You are attached (here or in another terminal ) to:" 
   echo "$attached"
   found=y
 }
@@ -21,7 +21,7 @@ detached=$(screen -list | grep '(Detached')
   found=y
 
   echo You have detached screens: 
-  echo "$detached"
+  echo "$detached" | awk '{print "("FNR")" $0}'
 
   echo  'Note: To detach - hit CTRL-A, CTRL-D'
   echo -n 'Attach to (1) : '
